@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JOY — Bleib in Kontakt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF3E4;
+    --paper:#FFFDF8;
+    --ink:#221F1A;
+    --ink-soft:#5B5648;
+    --sun:#F2A93B;
+    --sun-deep:#D9862A;
+    --coral:#EE6B5E;
+    --line:#E7DCC5;
+    --radius:20px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:
+      radial-gradient(circle at 18% 15%, rgba(242,169,59,0.18), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(238,107,94,0.14), transparent 40%),
+      var(--cream);
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    padding:32px 16px;
+  }
+
+  .card{
+    width:100%;
+    max-width:420px;
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:40px 36px 36px;
+    box-shadow:0 18px 50px -20px rgba(34,31,26,0.25);
+    position:relative;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--sun-deep);
+    text-align:center;
+    margin-bottom:18px;
+  }
+
+  /* --- JOY Avatar --- */
+  .avatar-wrap{
+    display:flex;
+    justify-content:center;
+    margin-bottom:22px;
+  }
+  .avatar-frame{
+    width:104px;
+    height:104px;
+    border-radius:50%;
+    background:linear-gradient(160deg,#FFE3AE,#F2A93B 60%,#EE6B5E);
+    padding:4px;
+    box-shadow:0 8px 24px -8px rgba(217,134,42,0.55);
+  }
+  .avatar-frame svg{
+    width:100%;
+    height:100%;
+    display:block;
+    border-radius:50%;
+    background:var(--paper);
+  }
+
+  #mouth{
+    transform-origin:100px 122px;
+    transition:none;
+  }
+  .talking #mouth{
+    animation:talk 0.32s ease-in-out infinite;
+  }
+  @keyframes talk{
+    0%,100%{transform:scaleY(1);}
+    50%{transform:scaleY(0.35);}
+  }
+  .talking .cheek{
+    animation:glow 1.4s ease-in-out infinite;
+  }
+  @keyframes glow{
+    0%,100%{opacity:.55;}
+    50%{opacity:.9;}
+  }
+
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:26px;
+    text-align:center;
+    margin:0 0 8px;
+    letter-spacing:-0.01em;
+  }
+  p.sub{
+    text-align:center;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--ink-soft);
+    margin:0 0 28px;
+  }
+
+  form{display:flex;flex-direction:column;gap:14px;}
+
+  label{
+    font-size:12px;
+    font-weight:600;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+    display:block;
+  }
+  .field{display:flex;flex-direction:column;}
+  input[type="email"],
+  input[type="tel"]{
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1.5px solid var(--line);
+    background:var(--cream);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  input:focus{
+    border-color:var(--sun-deep);
+    background:var(--paper);
+  }
+  input:focus-visible{
+    outline:2px solid var(--sun-deep);
+    outline-offset:1px;
+  }
+
+  .optional-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10px;
+    color:var(--ink-soft);
+    font-weight:400;
+    text-transform:none;
+    margin-left:6px;
+  }
+
+  button{
+    margin-top:6px;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:13px 18px;
+    border:none;
+    border-radius:12px;
+    background:var(--ink);
+    color:var(--paper);
+    cursor:pointer;
+    transition:transform .12s ease, background .15s ease;
+  }
+  button:hover{background:var(--sun-deep);}
+  button:active{transform:scale(0.98);}
+  button:disabled{opacity:.6;cursor:default;}
+
+  .error{
+    font-size:12px;
+    color:var(--coral);
+    min-height:16px;
+    margin-top:-4px;
+  }
+
+  /* --- speech bubble --- */
+  .bubble{
+    margin-top:20px;
+    background:var(--cream);
+    border:1.5px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:14px;
+    line-height:1.5;
+    color:var(--ink);
+    display:none;
+    position:relative;
+  }
+  .bubble.show{display:block;}
+  .bubble::before{
+    content:"";
+    position:absolute;
+    top:-8px;
+    left:50%;
+    transform:translateX(-50%);
+    border-width:0 8px 8px 8px;
+    border-style:solid;
+    border-color:transparent transparent var(--cream) transparent;
+  }
+  #bubbleText::after{
+    content:"▍";
+    color:var(--sun-deep);
+    animation:blink 0.8s steps(1) infinite;
+  }
+  .bubble.done #bubbleText::after{display:none;}
+  @keyframes blink{50%{opacity:0;}}
+
+  .note{
+    margin-top:18px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    text-align:center;
+    line-height:1.5;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .talking #mouth, .talking .cheek{animation:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="eyebrow">Bleib dran</div>
+
+  <div class="avatar-wrap">
+    <div class="avatar-frame">
+      <svg id="joyAvatar" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="100" cy="100" r="98" fill="#FFFDF8"/>
+        <circle class="cheek" cx="62" cy="118" r="14" fill="#EE6B5E" opacity="0.35"/>
+        <circle class="cheek" cx="138" cy="118" r="14" fill="#EE6B5E" opacity="0.35"/>
+        <circle cx="70" cy="90" r="8" fill="#221F1A"/>
+        <circle cx="130" cy="90" r="8" fill="#221F1A"/>
+        <path id="mouth" d="M 72 122 Q 100 148 128 122" stroke="#221F1A" stroke-width="7" fill="none" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <h1>Sag JOY hallo</h1>
+  <p class="sub">Hinterlasse deine E-Mail-Adresse — sobald du absendest, hat JOY dir etwas zu sagen.</p>
+
+  <form id="joyForm" novalidate>
+    <div class="field">
+      <label for="email">E-Mail-Adresse</label>
+      <input type="email" id="email" name="email" placeholder="du@beispiel.ch" required>
+    </div>
+
+    <div class="field">
+      <label for="phone">Telefonnummer <span class="optional-tag">optional</span></label>
+      <input type="tel" id="phone" name="phone" placeholder="+41 79 000 00 00">
+    </div>
+
+    <div class="error" id="errorMsg"></div>
+
+    <button type="submit" id="submitBtn">Absenden</button>
+  </form>
+
+  <div class="bubble" id="bubble">
+    <span id="bubbleText"></span>
+  </div>
+
+  <div class="note">Diese Seite ist eine Vorlage. Ersetze JOYs Bild/Illustration nach Belieben und verbinde das Formular mit deinem eigenen Backend, um Einträge dauerhaft zu speichern.</div>
+</div>
+
+<script>
+const form = document.getElementById('joyForm');
+const emailInput = document.getElementById('email');
+const phoneInput = document.getElementById('phone');
+const errorMsg = document.getElementById('errorMsg');
+const avatar = document.getElementById('joyAvatar').closest('.avatar-frame');
+const bubble = document.getElementById('bubble');
+const bubbleText = document.getElementById('bubbleText');
+const submitBtn = document.getElementById('submitBtn');
+
+const messages = [
+  "Danke dir! Ich melde mich bald bei dir.",
+  "Geschafft — schön, dass du dabei bist.",
+  "Angekommen! Ich freu mich, von dir zu hören."
+];
+
+function isValidEmail(value){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+function typeText(text){
+  bubble.classList.remove('done');
+  bubble.classList.add('show');
+  bubbleText.textContent = '';
+  let i = 0;
+  const interval = setInterval(() => {
+    bubbleText.textContent += text[i];
+    i++;
+    if(i >= text.length){
+      clearInterval(interval);
+      bubble.classList.add('done');
+      stopTalking();
+    }
+  }, 32);
+}
+
+function startTalking(){
+  avatar.classList.add('talking');
+}
+function stopTalking(){
+  avatar.classList.remove('talking');
+}
+
+async function handleSubmit(e){
+  e.preventDefault();
+  const email = emailInput.value.trim();
+  const phone = phoneInput.value.trim();
+
+  if(!isValidEmail(email)){
+    errorMsg.textContent = 'Bitte eine gültige E-Mail-Adresse eingeben.';
+    emailInput.focus();
+    return;
+  }
+  errorMsg.textContent = '';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Gesendet ✓';
+
+  // Eintrag speichern (persistente Storage-API der Artifacts, für alle Nutzer sichtbar)
+  try{
+    const key = 'submission:' + Date.now();
+    await window.storage.set(key, JSON.stringify({ email, phone, ts: new Date().toISOString() }), true);
+  }catch(err){
+    console.error('Speichern fehlgeschlagen:', err);
+  }
+
+  startTalking();
+  const msg = messages[Math.floor(Math.random() * messages.length)];
+  typeText(msg);
+}
+
+form.addEventListener('submit', handleSubmit);
+</script>
+
+</body>
+</html>
