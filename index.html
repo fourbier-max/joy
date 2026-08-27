@@ -220,7 +220,7 @@
 
   <div class="video-wrap">
     <div class="video-frame" id="videoFrame">
-      <video id="joyVideo" poster="joy-poster.jpg" playsinline muted>
+      <video id="joyVideo" poster="joy-poster.jpg" playsinline>
         <source src="Joy2_1.mp4" type="video/mp4">
       </video>
     </div>
@@ -289,12 +289,14 @@ function showStep(step){
 
 function playJoy(){
   videoFrame.classList.add('talking');
+  video.muted = false;
+  video.volume = 1;
   try{
     video.currentTime = 0;
     const playPromise = video.play();
     if(playPromise !== undefined){
       playPromise.catch(() => {
-        // Autoplay mit Ton evtl. blockiert -> stumm nochmal versuchen
+        // Ton wurde vom Browser blockiert -> stumm nochmal versuchen, damit JOY wenigstens visuell spricht
         video.muted = true;
         video.play().catch(()=>{});
       });
