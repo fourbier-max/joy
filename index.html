@@ -16,7 +16,7 @@
     --sun-deep:#D9862A;
     --coral:#EE6B5E;
     --line:#E7DCC5;
-    --radius:20px;
+    --radius:10px;
   }
   *{box-sizing:border-box;}
   body{
@@ -28,7 +28,8 @@
     background:
       radial-gradient(circle at 18% 15%, rgba(242,169,59,0.18), transparent 45%),
       radial-gradient(circle at 85% 80%, rgba(238,107,94,0.14), transparent 40%),
-      var(--cream);
+      var(--cream),
+      #e8e8e8;
     font-family:'Inter',sans-serif;
     color:var(--ink);
     padding:32px 16px;
@@ -43,6 +44,20 @@
     padding:36px 36px 32px;
     box-shadow:0 18px 50px -20px rgba(34,31,26,0.25);
     position:relative;
+    display: flex;
+    flex-direction: column;
+  }
+
+  @media (min-width: 860px) {
+  .card {
+      max-width: 840px;
+      flex-direction: row-reverse;
+    justify-content: space-between;
+    }
+  }
+
+  .text-div {
+    width: 400px;
   }
 
   .eyebrow{
@@ -62,12 +77,10 @@
     margin-bottom:22px;
   }
   .video-frame{
-    width:150px;
-    height:150px;
-    border-radius:50%;
-    background:linear-gradient(160deg,#FFE3AE,#F2A93B 60%,#EE6B5E);
+    width: calc( 396px * .66);
+    height: calc( 500px * .66);
+    background: white;
     padding:4px;
-    box-shadow:0 8px 24px -8px rgba(217,134,42,0.55);
     position:relative;
   }
   .video-frame.talking{
@@ -81,7 +94,7 @@
     width:100%;
     height:100%;
     display:block;
-    border-radius:50%;
+    /* border-radius:50%; */
     background:#000;
     object-fit:cover;
   }
@@ -216,7 +229,7 @@
 <body>
 
 <div class="card">
-  <div class="eyebrow">Bleib dran</div>
+  <!-- <div class="eyebrow">Bleib dran</div> -->
 
   <div class="video-wrap">
     <div class="video-frame" id="videoFrame">
@@ -226,37 +239,40 @@
     </div>
   </div>
 
-  <h1>Sag JOY hallo</h1>
-  <p class="sub" id="subText">Hinterlasse deine E-Mail-Adresse — sobald du absendest, hat JOY dir etwas zu sagen.</p>
+  <div class="text-div">
+    <h1>Erfahren Sie mehr</h1>
+    <p class="sub" id="subText">Bitte geben Sie Ihre E-Mail-Adresse an und erfahren Sie mehr über das Projekt!</p>
 
-  <!-- Schritt 1: Email -->
-  <form id="emailStep" class="active" novalidate>
-    <div class="field">
-      <label for="email">E-Mail-Adresse</label>
-      <input type="email" id="email" name="email" placeholder="du@beispiel.ch" required>
+    <!-- Schritt 1: Email -->
+    <form id="emailStep" class="active" novalidate>
+      <div class="field">
+        <label for="email">E-Mail-Adresse</label>
+        <input type="email" id="email" name="email" placeholder="du@beispiel.ch" required>
+      </div>
+      <div class="error" id="emailError"></div>
+      <button type="submit" id="emailBtn">Absenden</button>
+    </form>
+
+    <!-- Schritt 2: Telefonnummer (optional, erst nach Email sichtbar) -->
+    <form id="phoneStep" novalidate>
+      <div class="confirm">Danke! Wir haben <strong id="confirmedEmail"></strong> erhalten.</div>
+      <div class="field">
+        <label for="phone">Telefonnummer <span class="optional-tag">optional</span></label>
+        <input type="tel" id="phone" name="phone" placeholder="+41 79 000 00 00">
+      </div>
+      <button type="submit" id="phoneBtn">Absenden</button>
+      <button type="button" class="link-btn" id="skipBtn">Ohne Telefonnummer fortfahren</button>
+    </form>
+
+    <!-- Schritt 3: Fertig -->
+    <div id="doneState">
+      <div class="done-check">Wir melden uns in Kürze bei Ihnen mit weiterführenden Informationen.</div>
     </div>
-    <div class="error" id="emailError"></div>
-    <button type="submit" id="emailBtn">Absenden</button>
-  </form>
 
-  <!-- Schritt 2: Telefonnummer (optional, erst nach Email sichtbar) -->
-  <form id="phoneStep" novalidate>
-    <div class="confirm">Danke! Wir haben <strong id="confirmedEmail"></strong> erhalten.</div>
-    <div class="field">
-      <label for="phone">Telefonnummer <span class="optional-tag">optional</span></label>
-      <input type="tel" id="phone" name="phone" placeholder="+41 79 000 00 00">
-    </div>
-    <button type="submit" id="phoneBtn">Absenden</button>
-    <button type="button" class="link-btn" id="skipBtn">Ohne Telefonnummer fortfahren</button>
-  </form>
-
-  <!-- Schritt 3: Fertig -->
-  <div id="doneState">
-    <div class="done-check">Alles klar, du bist eingetragen. ✓</div>
+    <div class="note">Hier diverse Hinweise auf <strong>Datenschutz</strong> und so weiter...</div>
   </div>
-
-  <div class="note">Hier diverse Hinweise auf <strong>Datenschutz</strong> und so weiter...</div>
 </div>
+
 
 <script>
 const emailStep = document.getElementById('emailStep');
@@ -335,7 +351,7 @@ emailStep.addEventListener('submit', async (e) => {
   playJoy();
 
   confirmedEmail.textContent = email;
-  subText.textContent = 'Magst du uns noch deine Telefonnummer dalassen?';
+  subText.textContent = 'Wenn Sie uns Ihre Nummer hinterlassen, können wir Sie direkt telefonisch beraten.';
   showStep(phoneStep);
 });
 
@@ -344,12 +360,12 @@ phoneStep.addEventListener('submit', async (e) => {
   const phone = phoneInput.value.trim();
   phoneBtn.disabled = true;
   await saveEntry({ email: currentEmail, phone });
-  subText.textContent = 'Danke dir!';
+  subText.textContent = 'Besten Dank!';
   showStep(doneState);
 });
 
 skipBtn.addEventListener('click', () => {
-  subText.textContent = 'Danke dir!';
+  subText.textContent = 'Besten Dank!';
   showStep(doneState);
 });
 </script>
